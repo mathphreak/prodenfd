@@ -1,5 +1,6 @@
+# Enforce productivity
 module Enforcement
-  def Enforcement.run(blocks)
+  def self.run(blocks)
     puts 'Todo list:'
     blocks.each { |b| puts b }
   end
