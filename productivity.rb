@@ -4,17 +4,17 @@ module Productivity
   require 'yaml'
   require 'time'
 
-  def task_if_problematic(task)
+  private_class_method def self.task_if_problematic(list, task)
     return if task.due_date.nil?
     due_date = Time.parse(task.due_date)
     three_half_days_from_now = Time.new + (3 * 12 * 60 * 60)
     "[#{list.title}] #{task.title}" if due_date < three_half_days_from_now
   end
 
-  def problems_from(lists)
+  private_class_method def self.problems_from(lists)
     lists.map do |list|
       list.tasks.map do |task|
-        task_if_problematic task
+        task_if_problematic list, task
       end.compact
     end.flatten.compact
   end
