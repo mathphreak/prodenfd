@@ -3,7 +3,21 @@ module Enforcement
   require 'sys/proctable'
   require 'win32/process'
   require 'andand'
+  require 'tk'
   include Sys
+
+  private_class_method def self.notify(block_text)
+    root = TkRoot.new { title 'prodenfd' }
+    TkLabel.new(root) do
+      text block_text.encode Encoding::US_ASCII, undef: :replace, replace: ''
+      pack do
+        padx 15
+        pady 15
+        side 'left'
+      end
+    end
+    Tk.mainloop
+  end
 
   private_class_method def self.kill_steam
     system('C:\Program Files (x86)\Steam\Steam.exe', '-shutdown')
@@ -23,6 +37,7 @@ module Enforcement
       p.cmdline.andand.start_with? '"C:\Program Files (x86)\Steam\Steam.exe"'
     end
     kill_steam if steam_running
+    notify(blocks.join("\n")) if steam_running
     nil
   end
 end
