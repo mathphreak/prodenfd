@@ -6,7 +6,7 @@ module Enforcement
   require 'tk'
   include Sys
 
-  private_class_method def self.notify(block_text)
+  private_class_method def self.build_window(block_text)
     root = TkRoot.new { title 'prodenfd' }
     TkLabel.new(root) do
       text block_text.encode Encoding::US_ASCII, undef: :replace, replace: ''
@@ -16,6 +16,11 @@ module Enforcement
         side 'left'
       end
     end
+  end
+
+  private_class_method def self.notify(block_text)
+    build_window block_text
+    Tk.restart
     Tk.mainloop
   end
 

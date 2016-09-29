@@ -5,16 +5,22 @@ require 'English'
 
 logger = Logger.new('logfile.log', 'daily')
 
-logger.info 'Running...'
+loop do
+  logger.info 'Running...'
 
-begin
-  blocks = Productivity.blocks
-  logger.info "Got blocks: \n" + blocks.join("\n")
-  unless blocks.empty?
-    logger.info 'Insufficient productivity detected. Enforcing...'
-    Enforcement.run blocks
+  begin
+    blocks = Productivity.blocks
+    logger.info "Got blocks: \n" + blocks.join("\n")
+    unless blocks.empty?
+      logger.info 'Insufficient productivity detected. Enforcing...'
+      Enforcement.run blocks
+    end
+  rescue
+    logger.fatal $ERROR_INFO
+    raise
   end
-rescue
-  logger.fatal $ERROR_INFO
-  raise
+
+  # Wait ten minutes
+  logger.info 'Waiting...'
+  sleep 60 * 10
 end
