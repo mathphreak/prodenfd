@@ -2,6 +2,7 @@ require_relative 'productivity'
 require_relative 'enforcement'
 require 'logger'
 require 'English'
+require 'active_support/core_ext/numeric/time'
 
 logger = Logger.new('logfile.log', 'daily')
 
@@ -19,7 +20,6 @@ loop do
     logger.error $ERROR_INFO
   end
 
-  # Wait ten minutes
   logger.info 'Waiting...'
-  sleep 60 * 10
+  sleep 2.minutes.to_i
 end
