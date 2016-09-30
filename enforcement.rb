@@ -20,7 +20,6 @@ module Enforcement
 
   private_class_method def self.notify(block_text)
     build_window block_text
-    Tk.restart
     Tk.mainloop
   end
 
@@ -45,4 +44,13 @@ module Enforcement
     notify(blocks.join("\n")) if steam_running
     nil
   end
+
+  def self.do_run(blocks)
+    system('ruby', 'enforcement.rb', *blocks)
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  blocks = ARGV
+  Enforcement.run blocks
 end

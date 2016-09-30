@@ -13,11 +13,10 @@ loop do
     logger.info "Got blocks: \n" + blocks.join("\n")
     unless blocks.empty?
       logger.info 'Insufficient productivity detected. Enforcing...'
-      Enforcement.run blocks
+      Enforcement.do_run blocks
     end
   rescue
-    logger.fatal $ERROR_INFO
-    raise
+    logger.error $ERROR_INFO
   end
 
   # Wait ten minutes
