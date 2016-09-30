@@ -46,7 +46,7 @@ module Enforcement
   end
 
   def self.do_run(blocks)
-    system('ruby', 'enforcement.rb', *blocks)
+    system('rubyw', 'enforcement.rb', *blocks)
   end
 end
 
