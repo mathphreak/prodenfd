@@ -1,5 +1,4 @@
 require 'wunderlist'
-require 'yaml'
 require 'time'
 require 'active_support/core_ext/numeric/time'
 
@@ -14,6 +13,7 @@ module Metrics
         access_token: settings['access-token'],
         client_id: settings['client-id']
       )
+      @ignore_tag = settings['ignore-tag']
     end
 
     def blocks
@@ -34,6 +34,7 @@ module Metrics
 
     def task_if_problematic(list, task)
       return if task.due_date.nil?
+      return if task.title.include? @ignore_tag
       due_date = Time.parse(task.due_date)
       "[#{list.title}] #{task.title}" if due_date < 1.5.days.from_now
     end

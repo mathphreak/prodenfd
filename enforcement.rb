@@ -35,8 +35,6 @@ module Enforcement
   end
 
   def self.run(blocks)
-    puts 'Todo list:'
-    blocks.each { |b| puts b }
     steam_running = ProcTable.ps.any? do |p|
       p.cmdline.andand.start_with? '"C:\Program Files (x86)\Steam\Steam.exe"'
     end
@@ -46,6 +44,8 @@ module Enforcement
   end
 
   def self.do_run(blocks)
+    puts 'Todo list:'
+    blocks.each { |b| puts b }
     system('rubyw', 'enforcement.rb', *blocks)
   end
 end

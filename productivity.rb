@@ -1,10 +1,13 @@
+require 'yaml'
+
 # Detect productivity
 module Productivity
-  metric_names = Dir.chdir('metrics') do
-    Dir['*'].map { |e| File.basename(e, '.rb') }
+  Dir.chdir('metrics') do
+    Dir['*'].each do |e|
+      metric_name = File.basename(e, '.rb')
+      require_relative "metrics/#{metric_name}.rb"
+    end
   end
-
-  metric_names.each { |m| require_relative "metrics/#{m}.rb" }
 
   settings = YAML.load_file('settings.yml')
 
