@@ -19,17 +19,17 @@ module Metrics
     def blocks
       root = @wl.get 'api/v1/root'
       id = root['id']
-      unless cache_revision(id) == root['revision'] &&
-             Time.now < @cache[id][:expires]
-        update_cache(root)
-      end
+      update_cache(root) unless up_to_date(id, root['revision'])
       cached_problems
     end
 
     private
 
-    def cache_revision(id)
-      @cache[id].andand[:revision]
+    def up_to_date(id, revision)
+      return false unless @cache.key? id
+      return false unless @cache[id].andand[:revision] == revision
+      return false unless @cache[id].andand[:expires] > Time.now
+      true
     end
 
     def task_if_problematic(list, task)
@@ -40,17 +40,24 @@ module Metrics
     end
 
     def update_cache_for(list)
-      return if cache_revision(list.id) == list.revision
+      return if up_to_date(list.id, list.revision)
       result = list.tasks.map do |task|
         task_if_problematic list, task
       end.compact
-      @cache[list.id] = { revision: list.revision, data: result }
+      @cache[list.id] = {
+        revision: list.revision,
+        data: result,
+        expires: rand(10..30).minutes.from_now
+      }
     end
 
     def update_cache(root)
       id = root['id']
       @wl.lists.each { |list| update_cache_for list }
-      @cache[id] = { revision: root['revision'], expires: 30.minutes.from_now }
+      @cache[id] = {
+        revision: root['revision'],
+        expires: rand(10..30).minutes.from_now
+      }
     end
 
     def cached_problems
