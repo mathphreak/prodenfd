@@ -4,8 +4,7 @@ require 'yaml'
 module Productivity
   Dir.chdir('metrics') do
     Dir['*'].each do |e|
-      metric_name = File.basename(e, '.rb')
-      require_relative "metrics/#{metric_name}.rb"
+      require_relative "metrics/#{e}"
     end
   end
 

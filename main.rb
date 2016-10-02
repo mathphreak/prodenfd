@@ -14,7 +14,7 @@ loop do
     logger.info "Got blocks: \n" + blocks.join("\n")
     unless blocks.empty?
       logger.info 'Insufficient productivity detected. Enforcing...'
-      Enforcement.do_run blocks
+      Enforcement.run blocks
     end
   rescue
     logger.error $ERROR_INFO
