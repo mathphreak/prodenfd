@@ -36,7 +36,8 @@ module Enforcers
     def do_notify(blocks)
       puts 'Todo list:'
       blocks.each { |b| puts b }
-      system('rubyw', 'enforcers/tk_notify.rb', *blocks)
+      pid = spawn('rubyw', 'enforcers/tk_notify.rb', *blocks)
+      Process.detach pid
     end
   end
 end
