@@ -15,6 +15,7 @@ module Metrics
         client_id: settings['client-id']
       )
       @ignore_tag = settings['ignore-tag']
+      @list_times = settings['list-times']
     end
 
     def blocks
@@ -33,11 +34,22 @@ module Metrics
       true
     end
 
+    def task_due_date(task, list)
+      result = Time.parse(task.due_date)
+      time = @list_times[list.id]
+      return result if time.nil?
+      h, m = time.split ':'
+      result += h.to_i.hours
+      result += m.to_i.minutes
+      result
+    end
+
     def task_if_problematic(list, task)
       return if task.due_date.nil?
       return if task.title.include? @ignore_tag
-      due_date = Time.parse(task.due_date)
-      "[#{list.title}] #{task.title}" if due_date < 1.5.days.from_now
+      due_date = task_due_date(task, list)
+      return nil unless due_date < 2.days.from_now
+      "[#{list.title}] #{task.title} (#{due_date.ctime})"
     end
 
     def update_cache_for(list)
