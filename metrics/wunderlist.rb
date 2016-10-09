@@ -48,7 +48,7 @@ module Metrics
       return if task.due_date.nil?
       return if task.title.include? @ignore_tag
       due_date = task_due_date(task, list)
-      return nil unless due_date < 2.days.from_now
+      return nil unless due_date < 1.days.from_now
       "[#{list.title}] #{task.title} (#{due_date.ctime})"
     end
 

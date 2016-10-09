@@ -8,7 +8,8 @@ module Enforcers
     include Sys
 
     def initialize(settings)
-      @steam_path = settings['steam-path']
+      @steam_folder = settings['steam-folder']
+      @steam_path = "#{@steam_folder}\\Steam.exe"
     end
 
     def run(blocks)
@@ -23,14 +24,16 @@ module Enforcers
     private
 
     def kill_steam
-      system(@steam_path, '-shutdown')
-      ##
-      # ProcTable.ps.each do |p|
-      #   next unless p.cmdline.andand.start_with?(
-      #       '"C:\Program Files (x86)\Steam\Steam.exe"')
-      #   puts p.cmdline
-      #   Process.kill 'KILL', p.pid
-      # end
+      ProcTable.ps.each do |p|
+        next if p.cmdline.nil?
+        next unless p.cmdline.start_with?("\"#{@steam_path}\"",
+                                          "\"#{@steam_folder}\\steamapps")
+        if p.cmdline.start_with?("\"#{@steam_path}\"")
+          system(@steam_path, '-shutdown')
+        else
+          Process.kill 'KILL', p.pid
+        end
+      end
     end
 
     def do_notify(blocks)
