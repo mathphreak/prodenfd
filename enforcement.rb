@@ -16,6 +16,10 @@ module Enforcement
 
   # Returns a list of pending tasks for the next day and a half
   def self.run(blocks)
-    @enforcers.each { |e| e.run(blocks) }
+    took_action = @enforcers.map(&:run)
+    return unless took_action.any?
+    pid = spawn('C:\\RailsInstaller\\Ruby2.2.0\\bin\\rubyw',
+                'enforcers/tk_notify.rb', *blocks)
+    Process.detach pid
   end
 end

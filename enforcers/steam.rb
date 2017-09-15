@@ -12,13 +12,12 @@ module Enforcers
       @steam_path = "#{@steam_folder}\\Steam.exe"
     end
 
-    def run(blocks)
+    def run
       steam_running = ProcTable.ps.any? do |p|
         p.cmdline.andand.start_with? "\"#{@steam_path}\""
       end
       kill_steam if steam_running
-      do_notify(blocks) if steam_running
-      nil
+      steam_running
     end
 
     private
@@ -31,16 +30,10 @@ module Enforcers
         if p.cmdline.start_with?("\"#{@steam_path}\"")
           system(@steam_path, '-shutdown')
         else
-          Process.kill 'KILL', p.pid
+          puts 'Not killing', p.pid
+          # Process.kill 'KILL', p.pid
         end
       end
-    end
-
-    def do_notify(blocks)
-      puts 'Todo list:'
-      blocks.each { |b| puts b }
-      pid = spawn('rubyw', 'enforcers/tk_notify.rb', *blocks)
-      Process.detach pid
     end
   end
 end
