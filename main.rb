@@ -16,7 +16,7 @@ loop do
       logger.info 'Insufficient productivity detected. Enforcing...'
       Enforcement.run blocks
     end
-  rescue
+  rescue StandardError
     logger.error $ERROR_INFO
   end
 
